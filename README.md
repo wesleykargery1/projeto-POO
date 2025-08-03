@@ -27,5 +27,6 @@ Medo do Desconhecido é um rpg que retrata a história de uma família de pesqui
 ## 3. Cronograma Detalhado  
 - Não definido
 ## 4. Requirimentos Técnicos  
-- Não definido
+- Python 3.11.9
+- Pygame 2.6.1
 
