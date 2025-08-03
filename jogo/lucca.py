@@ -8,7 +8,7 @@ class Lucca(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         
-        self.aumentar = 5.0
+        self.aumentar = 2.0
         
         self.sprites_movimento = {
             'cima': [pygame.transform.scale(pygame.image.load('sprites/lucca-de-costa-andando-1-pixilart.png'), (32 * self.aumentar, 32 * self.aumentar)),
@@ -68,4 +68,5 @@ class Lucca(pygame.sprite.Sprite):
     def parar(self):
         self.estado = 'idle'
         self.frame = 0
+
 
