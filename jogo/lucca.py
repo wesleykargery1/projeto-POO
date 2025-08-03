@@ -3,7 +3,6 @@ from pygame.locals import *
 
 
 pygame.init()
-tela = pygame.display.set_mode((800, 600))
 
 class Lucca(pygame.sprite.Sprite):
     def __init__(self):
@@ -69,3 +68,4 @@ class Lucca(pygame.sprite.Sprite):
     def parar(self):
         self.estado = 'idle'
         self.frame = 0
+
