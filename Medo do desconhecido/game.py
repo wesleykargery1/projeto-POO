@@ -1,5 +1,6 @@
 import pygame
 from carro import Carro
+from estado import EstadoJogo
 from pygame.locals import *
 from lucca import Lucca
 from sys import exit
@@ -25,11 +26,6 @@ fundo_jogo = pygame.transform.scale(fundo_jogo, (largura, altura))
 fundo_hotel = pygame.transform.scale(fundo_hotel, (largura, altura))
 
 som_tocado = False
-
-class EstadoJogo:
-    menu = 0
-    jogando = 1
-    transicao_hotel = 2
 
 class Menu:
     def mostrar(self, tela):
