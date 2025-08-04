@@ -40,6 +40,7 @@ class Lucca(pygame.sprite.Sprite):
         self.frame = 0
         self.direcao = 'baixo'
         self.estado = 'movendo'
+        self.rect.topleft = (800 / 2, 600 / 2)
     
     def update(self):
         if self.estado == 'movendo':
@@ -67,4 +68,5 @@ class Lucca(pygame.sprite.Sprite):
     def parar(self):
         self.estado = 'idle'
         self.frame = 0
+
 
