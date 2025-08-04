@@ -6,7 +6,7 @@
 **Objetivo**: Criar um jogo RPG "Medo do Desconhecido" com mecânicas de voz e outras mecânicas de combate para deixar a gameplay mais complexa  
 ## 2. Descrição detalhada do Projeto  
 #### O que é "Medo do Desconhecido"?  
-Medo do Desconhecido é um rpg que retrata a história de uma família de pesquisadores que vivem em um mundo onde as almas possuem características únicas que indicam os traços predominantes de suas personalidades. George buscava fazer com que os animais conseguissem transcender a um nível superior, em busca de uma raça perfeita, mas isso acaba levando a sua morte; Lucca e sua família então partem a uma floresta para procurar pistas sobre o que levou a morte de George, lá eles passarão por vários desafios enquanto buascam a verdade.  
+Medo do Desconhecido é um rpg que retrata a história de uma família de pesquisadores que vivem em um mundo onde as almas possuem características únicas que indicam os traços predominantes de suas personalidades. George buscava fazer com que os animais conseguissem transcender a um nível superior, em busca de uma raça perfeita, mas isso acaba levando a sua morte; Lucca e sua família então partem a uma floresta para procurar pistas sobre o que levou a morte de George, lá eles passarão por vários desafios enquanto buscam a verdade.  
 ### 2.1 Funcionalidades Principais  
 - Motor do Jogo:
   - Movimentação
