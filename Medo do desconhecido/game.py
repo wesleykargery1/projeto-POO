@@ -1,5 +1,5 @@
 import pygame
-from carro import Carro
+from sounds import *
 from estado import EstadoJogo
 from pygame.locals import *
 from lucca import Lucca
@@ -25,6 +25,8 @@ fundo_menu = pygame.transform.scale(fundo_menu, (largura, altura))
 fundo_jogo = pygame.transform.scale(fundo_jogo, (largura, altura))
 fundo_hotel = pygame.transform.scale(fundo_hotel, (largura, altura))
 
+fonte = pygame.font.Font(None, 36)
+
 som_tocado = False
 
 class Menu:
@@ -36,8 +38,13 @@ menu = Menu()
 pos_x = -800
 velocidade = 6
 
+porta_rect = pygame.Rect(300, 100, 200 , 100)
+perto_da_porta = False
+
 personagem = Lucca()
 todos_sprites = pygame.sprite.Group(personagem)
+
+
 
 while True:
     for event in pygame.event.get():
@@ -49,6 +56,11 @@ while True:
             if estado == EstadoJogo.menu:
                 estado = EstadoJogo.jogando
                 pos_x = -800
+
+            if estado == EstadoJogo.transicao_hotel and event.key == K_f and perto_da_porta:
+                Porta.som_porta()
+   
+                perto_da_porta = False
     
     if estado == EstadoJogo.transicao_hotel:
         teclas = pygame.key.get_pressed()
@@ -84,6 +96,25 @@ while True:
         tela.blit(fundo_hotel, (0, 0))
         todos_sprites.draw(tela)
         todos_sprites.update()
+
+
+        if personagem.rect.colliderect(porta_rect):
+            perto_da_porta = True
+        else:
+            perto_da_porta = False
+
+        if perto_da_porta:
+            texto = fonte.render("Aperte F para entrar", True, (255, 255, 255))
+            texto_rect = texto.get_rect(center=(largura // 2, altura - 80))  
+        
+      
+            fundo_texto = pygame.Surface((texto.get_width() + 40, texto.get_height() + 20), pygame.SRCALPHA)
+            pygame.draw.rect(fundo_texto, (0, 0, 0, 128),  
+                         (0, 0, texto.get_width() + 40, texto.get_height() + 20), 
+                         border_radius=10) 
+            tela.blit(fundo_texto, (texto_rect.x - 20, texto_rect.y - 10))
+        
+            tela.blit(texto, texto_rect)
 
     pygame.display.flip()
     tempo.tick(60)

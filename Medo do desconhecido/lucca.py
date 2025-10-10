@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 
+
 pygame.init()
 
 class Lucca(pygame.sprite.Sprite):
