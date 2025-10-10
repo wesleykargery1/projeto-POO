@@ -26,7 +26,8 @@ fundo_jogo = pygame.transform.scale(fundo_jogo, (largura, altura))
 fundo_hotel = pygame.transform.scale(fundo_hotel, (largura, altura))
 
 fonte = pygame.font.Font(None, 36)
-
+tema = Tema()
+som_iniciado = False
 som_tocado = False
 
 class Menu:
@@ -40,9 +41,11 @@ velocidade = 6
 
 porta_rect = pygame.Rect(300, 100, 200 , 100)
 perto_da_porta = False
+colidindo_com_carro = False
 
 personagem = Lucca()
 todos_sprites = pygame.sprite.Group(personagem)
+
 
 
 
@@ -54,6 +57,9 @@ while True:
         
         if event.type == pygame.KEYDOWN:
             if estado == EstadoJogo.menu:
+                if not som_iniciado:
+                    tema.som_tema()
+                    som_iniciado = True
                 estado = EstadoJogo.jogando
                 pos_x = -800
 
@@ -63,17 +69,13 @@ while True:
                 perto_da_porta = False
     
     if estado == EstadoJogo.transicao_hotel:
-        teclas = pygame.key.get_pressed()
-        if teclas[K_UP] or teclas[K_w]:
-            personagem.mover('cima')
-        elif teclas[K_DOWN] or teclas[K_s]:
-            personagem.mover('baixo')
-        elif teclas[K_LEFT] or teclas[K_a]:
-            personagem.mover('esquerda')
-        elif teclas[K_RIGHT] or teclas[K_d]:
-            personagem.mover('direita')
-        else:
-            personagem.parar()
+        tela.blit(fundo_hotel, (0, 0))
+        tela.blit(van_maior, (10, 60))
+        colisao_carro = pygame.Rect(10, 60, 100 , 100)
+        colidindo_com_carro = personagem.rect.colliderect(colisao_carro)
+
+        todos_sprites.draw(tela)
+        todos_sprites.update()
 
     if estado == EstadoJogo.jogando:
         pos_x += velocidade
@@ -93,10 +95,20 @@ while True:
             som_tocado = True
     
     elif estado == EstadoJogo.transicao_hotel:
-        tela.blit(fundo_hotel, (0, 0))
-        todos_sprites.draw(tela)
-        todos_sprites.update()
-
+        if colidindo_com_carro:
+            personagem.parar()
+        else:
+         teclas = pygame.key.get_pressed()
+         if teclas[K_UP] or teclas[K_w]:
+            personagem.mover('cima')
+         elif teclas[K_DOWN] or teclas[K_s]:
+            personagem.mover('baixo')
+         elif teclas[K_LEFT] or teclas[K_a]:
+            personagem.mover('esquerda')
+         elif teclas[K_RIGHT] or teclas[K_d]:
+            personagem.mover('direita')
+         else:
+            personagem.parar()
 
         if personagem.rect.colliderect(porta_rect):
             perto_da_porta = True
