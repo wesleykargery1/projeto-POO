@@ -45,7 +45,7 @@ class Lucca(pygame.sprite.Sprite):
     
     def update(self):
         if self.estado == 'movendo':
-            self.frame += 0.5
+            self.frame += 0.10
             if self.frame >= len(self.sprites_movimento[self.direcao]):
                 self.frame = 0
             self.image = self.sprites_movimento[self.direcao][int(self.frame)]

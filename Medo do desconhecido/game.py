@@ -39,7 +39,7 @@ menu = Menu()
 pos_x = -800
 velocidade = 6
 
-porta_rect = pygame.Rect(300, 100, 200 , 100)
+porta_rect = pygame.Rect(300, 120, 220 , 120)
 perto_da_porta = False
 colidindo_com_carro = False
 
@@ -67,7 +67,10 @@ while True:
     if estado == EstadoJogo.transicao_hotel:
         tela.blit(fundo_hotel, (0, 0))
         tela.blit(van_maior, (10, 60))
-        colisao_carro = pygame.Rect(140, 250, 110, 50)
+        colisao_carro = pygame.Rect(140, 0, 115, 2000)
+        colisao_cima = pygame.Rect(0, 200 , 2000, 20)
+        colisao_baixo = pygame.Rect(0, 365, 2000, 20)
+        colisao_direita = pygame.Rect(830, 0, 20, 800)
         
 
         pos_anterior_x = personagem.rect.x
@@ -88,7 +91,10 @@ while True:
         
 
         colidindo_com_carro = personagem.rect.colliderect(colisao_carro)
-        if colidindo_com_carro:
+        colidindo_cima = personagem.rect.colliderect(colisao_cima)
+        colidindo_baixo = personagem.rect.colliderect(colisao_baixo)
+        colidindo_direita = personagem.rect.colliderect(colisao_direita)
+        if colidindo_com_carro or colidindo_cima or colidindo_baixo or colidindo_direita:
             
             personagem.rect.x = pos_anterior_x
             personagem.rect.y = pos_anterior_y
@@ -96,25 +102,6 @@ while True:
 
         todos_sprites.draw(tela)
         todos_sprites.update()
-
-    if estado == EstadoJogo.jogando:
-        pos_x += velocidade
-        if pos_x > largura:
-            estado = EstadoJogo.transicao_hotel
-
-    if estado == EstadoJogo.menu:
-        menu.mostrar(tela)
-    
-    elif estado == EstadoJogo.jogando:
-        
-        tela.blit(fundo_jogo, (0, 0))
-        tela.blit(van_maior, (pos_x, 150))
-
-        if not som_tocado:
-            Carro.som_carro()
-            som_tocado = True
-    
-    elif estado == EstadoJogo.transicao_hotel:
 
         if personagem.rect.colliderect(porta_rect):
             perto_da_porta = True
@@ -134,5 +121,27 @@ while True:
         
             tela.blit(texto, texto_rect)
 
+
+    if estado == EstadoJogo.jogando:
+        pos_x += velocidade
+        tela.blit(fundo_jogo, (0, 0))
+        tela.blit(van_maior, (pos_x, 150))
+
+        if not som_tocado:
+            Carro.som_carro()
+            som_tocado = True
+        if pos_x > largura:
+            estado = EstadoJogo.transicao_hotel
+
+
+
+    if estado == EstadoJogo.menu:
+        menu.mostrar(tela)
+    
+
+        
+        
+    
+ 
     pygame.display.flip()
     tempo.tick(60)
