@@ -20,10 +20,15 @@ van_maior = pygame.transform.scale(van, (400, 400))
 fundo_jogo = pygame.image.load("background/pixil-frame-0.png").convert()
 fundo_menu = pygame.image.load("background/menu.png").convert()
 fundo_hotel = pygame.image.load("background/Hotel.png").convert()
+fundo_recep = pygame.image.load("background/recepção-pixilart.png").convert()
+fundo_corredor = pygame.image.load("background/corredor-pixilart.png").convert()
+
 
 fundo_menu = pygame.transform.scale(fundo_menu, (largura, altura))
 fundo_jogo = pygame.transform.scale(fundo_jogo, (largura, altura))
 fundo_hotel = pygame.transform.scale(fundo_hotel, (largura, altura))
+fundo_recep = pygame.transform.scale(fundo_recep, (largura, altura))
+fundo_corredor = pygame.transform.scale(fundo_corredor, (largura, altura))
 
 fonte = pygame.font.Font(None, 36)
 tema = Tema()
@@ -62,8 +67,25 @@ while True:
 
             if estado == EstadoJogo.transicao_hotel and event.key == K_f and perto_da_porta:
                 Porta.som_porta()
+                estado = EstadoJogo.recep
                 perto_da_porta = False
     
+    if estado == EstadoJogo.jogando:
+        pos_x += velocidade
+        tela.blit(fundo_jogo, (0, 0))
+        tela.blit(van_maior, (pos_x, 150))
+
+        if not som_tocado:
+            Carro.som_carro()
+            som_tocado = True
+        if pos_x > largura:
+            estado = EstadoJogo.transicao_hotel
+
+
+
+    if estado == EstadoJogo.menu:
+        menu.mostrar(tela)
+
     if estado == EstadoJogo.transicao_hotel:
         tela.blit(fundo_hotel, (0, 0))
         tela.blit(van_maior, (10, 60))
@@ -120,28 +142,24 @@ while True:
             tela.blit(fundo_texto, (texto_rect.x - 20, texto_rect.y - 10))
         
             tela.blit(texto, texto_rect)
+    if estado == EstadoJogo.recep:
+        tela.blit(fundo_recep, (0, 0))
 
+        teclas = pygame.key.get_pressed()
+        if teclas[K_UP] or teclas[K_w]:
+            personagem.mover('cima')
+        elif teclas[K_DOWN] or teclas[K_s]:
+            personagem.mover('baixo')
+        elif teclas[K_LEFT] or teclas[K_a]:
+            personagem.mover('esquerda')
+        elif teclas[K_RIGHT] or teclas[K_d]:
+            personagem.mover('direita')
+        else:
+            personagem.parar()
 
-    if estado == EstadoJogo.jogando:
-        pos_x += velocidade
-        tela.blit(fundo_jogo, (0, 0))
-        tela.blit(van_maior, (pos_x, 150))
+        todos_sprites.draw(tela)
+        todos_sprites.update()
 
-        if not som_tocado:
-            Carro.som_carro()
-            som_tocado = True
-        if pos_x > largura:
-            estado = EstadoJogo.transicao_hotel
-
-
-
-    if estado == EstadoJogo.menu:
-        menu.mostrar(tela)
-    
-
-        
-        
-    
  
     pygame.display.flip()
     tempo.tick(60)
