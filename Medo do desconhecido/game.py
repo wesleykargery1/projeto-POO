@@ -2,8 +2,8 @@ import pygame
 from sounds import *
 from estado import EstadoJogo
 from pygame.locals import *
-from lucca import Lucca
 from sys import exit
+from movimento import *
 
 pygame.init()
 pygame.mixer.init()
@@ -48,8 +48,7 @@ porta_rect = pygame.Rect(300, 120, 220 , 120)
 perto_da_porta = False
 colidindo_com_carro = False
 
-personagem = Lucca()
-todos_sprites = pygame.sprite.Group(personagem)
+
 
 while True:
     for event in pygame.event.get():
@@ -93,29 +92,16 @@ while True:
         colisao_cima = pygame.Rect(0, 200 , 2000, 20)
         colisao_baixo = pygame.Rect(0, 365, 2000, 20)
         colisao_direita = pygame.Rect(830, 0, 20, 800)
-        
-
         pos_anterior_x = personagem.rect.x
         pos_anterior_y = personagem.rect.y
         
-        
-        teclas = pygame.key.get_pressed()
-        if teclas[K_UP] or teclas[K_w]:
-            personagem.mover('cima')
-        elif teclas[K_DOWN] or teclas[K_s]:
-            personagem.mover('baixo')
-        elif teclas[K_LEFT] or teclas[K_a]:
-            personagem.mover('esquerda')
-        elif teclas[K_RIGHT] or teclas[K_d]:
-            personagem.mover('direita')
-        else:
-            personagem.parar()
-        
+        Movimento.mover()
 
         colidindo_com_carro = personagem.rect.colliderect(colisao_carro)
         colidindo_cima = personagem.rect.colliderect(colisao_cima)
         colidindo_baixo = personagem.rect.colliderect(colisao_baixo)
         colidindo_direita = personagem.rect.colliderect(colisao_direita)
+
         if colidindo_com_carro or colidindo_cima or colidindo_baixo or colidindo_direita:
             
             personagem.rect.x = pos_anterior_x
@@ -144,22 +130,46 @@ while True:
             tela.blit(texto, texto_rect)
     if estado == EstadoJogo.recep:
         tela.blit(fundo_recep, (0, 0))
-
-        teclas = pygame.key.get_pressed()
-        if teclas[K_UP] or teclas[K_w]:
-            personagem.mover('cima')
-        elif teclas[K_DOWN] or teclas[K_s]:
-            personagem.mover('baixo')
-        elif teclas[K_LEFT] or teclas[K_a]:
-            personagem.mover('esquerda')
-        elif teclas[K_RIGHT] or teclas[K_d]:
-            personagem.mover('direita')
-        else:
-            personagem.parar()
+        recep = pygame.Rect(400,300, 50, 50)
+        co_recep = personagem.rect.colliderect(recep)
+        pos_anterior_x = personagem.rect.x
+        pos_anterior_y = personagem.rect.y
+        
+        
+        colisao_esquerda = pygame.Rect(-10, 0, 2, 600)
+        colisao_direita = pygame.Rect(830, 0, 2, 600)
+        colisao_cima = pygame.Rect(0, 0, 800, 20)
+        colisao_baixo = pygame.Rect(0, 580, 800, 20) 
+        
+        Movimento.mover()
+        
+        colidindo_esquerda = personagem.rect.colliderect(colisao_esquerda)
+        colidindo_direita = personagem.rect.colliderect(colisao_direita)
+        colidindo_cima = personagem.rect.colliderect(colisao_cima)
+        colidindo_baixo = personagem.rect.colliderect(colisao_baixo)
+        
+        if colidindo_esquerda or colidindo_direita or colidindo_cima or colidindo_baixo:
+            personagem.rect.x = pos_anterior_x
+            personagem.rect.y = pos_anterior_y
 
         todos_sprites.draw(tela)
         todos_sprites.update()
+        if co_recep:
+            #implementar dialogos
+            texto = fonte.render("Pressione F para conversar", True, (255, 255, 255))
 
+            texto_rect = texto.get_rect(center=(largura // 2, altura - 80))  
+            fundo_texto = pygame.Surface((texto.get_width() + 40, texto.get_height() + 20), pygame.SRCALPHA)
+            pygame.draw.rect(fundo_texto, (0, 0, 0, 128),  
+                            (0, 0, texto.get_width() + 40, texto.get_height() + 20), 
+                            border_radius=10) 
+            tela.blit(fundo_texto, (texto_rect.x - 20, texto_rect.y - 10))
+            tela.blit(texto, texto_rect)
+
+            #teste
+            keys = pygame.key.get_pressed()
+            if keys[K_f]:
+             exit()
  
     pygame.display.flip()
     tempo.tick(60)
