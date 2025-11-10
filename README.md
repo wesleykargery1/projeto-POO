@@ -10,10 +10,10 @@ Medo do Desconhecido é um rpg que retrata a história de uma família de pesqui
 ### 2.1 Funcionalidades Principais  
 - Motor do Jogo:
   - Movimentação
-  - Interação e diálogos com NPCs 
+  - Interação e diálogos com NPCs
   - Combate em turnos com esquiva e crítico
   - Menu interativo utilizando sistema de reconhecimento de voz
-  - Barra de medo para aumentar a dificuldade do combate
+  - Barra de medo para aumentar a dificuldade do combate (não vai dar tempo)
 - Interface Gráfica:
   - Renderização do ambiente e personagens
   - Telas de início/pause/game over
@@ -21,7 +21,7 @@ Medo do Desconhecido é um rpg que retrata a história de uma família de pesqui
 - Efeitos Sonoros:
   - Som de Acertos/Acertos críticos
   - Trilha sonora
-  - Distorção na sonoridade conforme o aumento do medo
+  - Distorção na sonoridade conforme o aumento do medo (não vai dar tempo)
 ### 2.2 Arquitetura do Código  
 - Não definido
 ## 3. Cronograma Detalhado  
