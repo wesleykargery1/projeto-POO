@@ -1,4 +1,4 @@
-import pygame
+from pygame import *
 from lucca import *
 
 

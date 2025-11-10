@@ -4,6 +4,7 @@ from estado import EstadoJogo
 from pygame.locals import *
 from sys import exit
 from movimento import *
+from dialogo import *
 
 pygame.init()
 pygame.mixer.init()
@@ -31,6 +32,27 @@ fundo_recep = pygame.transform.scale(fundo_recep, (largura, altura))
 fundo_corredor = pygame.transform.scale(fundo_corredor, (largura, altura))
 
 fonte = pygame.font.Font(None, 36)
+dialogo_recep = Dialogo([
+    "Recepcionista: Você não é bem vindo aqui",
+    "Lucca: Como assim?",
+    "Recepcionista: Eles não te querem aqui",
+    "Lucca: Eles?",
+    "Recepcionista: Os seres da floresta",
+    "Recepcionista: Eles não gostam de cientistas",
+    "Lucca: Eu vim aqui apenas para investigar",
+    "Repecionista: Tome cuidado garoto",
+    "Recepcionista: As coisas não acabaram bem ",
+    "Recepcionista: Para o ultimo que tentou",
+    "Lucca: O nome dele era George?",
+    "Recepcionista: Como você sabe?",
+    "Lucca: É o nome do meu pai que desapareceu",
+    "Recepcionista: Mais um motivo para desistir",
+    "Lucca: Eu não posso desistir",
+    "Lucca: Eu preciso descobrir o que aconteceu com ele",
+    "Recepcionista: Tudo bem",
+    "Recepcionista: Vá para o primeiro quarto seguindo a direita",
+    "Lucca: Obrigado"
+])
 tema = Tema()
 som_iniciado = False
 som_tocado = False
@@ -128,7 +150,9 @@ while True:
             tela.blit(fundo_texto, (texto_rect.x - 20, texto_rect.y - 10))
         
             tela.blit(texto, texto_rect)
+                
     if estado == EstadoJogo.recep:
+        personagem.ajustar_tamanho(True)
         tela.blit(fundo_recep, (0, 0))
         recep = pygame.Rect(400,300, 50, 50)
         co_recep = personagem.rect.colliderect(recep)
@@ -155,7 +179,7 @@ while True:
         todos_sprites.draw(tela)
         todos_sprites.update()
         if co_recep:
-            #implementar dialogos
+            
             texto = fonte.render("Pressione F para conversar", True, (255, 255, 255))
 
             texto_rect = texto.get_rect(center=(largura // 2, altura - 80))  
@@ -166,10 +190,18 @@ while True:
             tela.blit(fundo_texto, (texto_rect.x - 20, texto_rect.y - 10))
             tela.blit(texto, texto_rect)
 
-            #teste
             keys = pygame.key.get_pressed()
             if keys[K_f]:
-             exit()
- 
+                dialogo_recep.iniciar()
+                estado = EstadoJogo.dialogo
+    if estado == EstadoJogo.dialogo:
+        tela.blit(fundo_recep, (0, 0))
+        dialogo_recep.desenhar(tela, largura, altura)
+        
+        keys = pygame.key.get_pressed()
+        if keys[K_t] and dialogo_recep.ativo:
+            dialogo_recep.avancar()
+        elif not dialogo_recep.ativo:
+            estado = EstadoJogo.recep
     pygame.display.flip()
     tempo.tick(60)
