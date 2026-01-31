@@ -23,12 +23,14 @@ fundo_menu = pygame.image.load("background/menu.png").convert()
 fundo_hotel = pygame.image.load("background/Hotel.png").convert()
 fundo_recep = pygame.image.load("background/recepção-pixilart.png").convert()
 fundo_corredor = pygame.image.load("background/corredor-pixilart.png").convert()
+fundo_floresta = pygame.image.load("background/floresta1.png").convert()  
 
 fundo_menu = pygame.transform.scale(fundo_menu, (largura, altura))
 fundo_jogo = pygame.transform.scale(fundo_jogo, (largura, altura))
 fundo_hotel = pygame.transform.scale(fundo_hotel, (largura, altura))
 fundo_recep = pygame.transform.scale(fundo_recep, (largura, altura))
 fundo_corredor = pygame.transform.scale(fundo_corredor, (largura, altura))
+fundo_floresta = pygame.transform.scale(fundo_floresta, (largura, altura))  
 
 fonte = pygame.font.Font(None, 36)
 
@@ -69,6 +71,7 @@ pos_x = -800
 velocidade = 6
 
 porta_rect = pygame.Rect(300, 120, 220, 120)
+porta_floresta_rect = pygame.Rect(120, 180, 140, 200)  
 perto_da_porta = False
 
 while True:
@@ -135,9 +138,7 @@ while True:
             texto = fonte.render("Aperte F para entrar", True, (255, 255, 255))
             texto_rect = texto.get_rect(center=(largura // 2, altura - 80))
             fundo_texto = pygame.Surface((texto.get_width() + 40, texto.get_height() + 20), pygame.SRCALPHA)
-            pygame.draw.rect(fundo_texto, (0, 0, 0, 128),
-                             (0, 0, texto.get_width() + 40, texto.get_height() + 20),
-                             border_radius=10)
+            pygame.draw.rect(fundo_texto, (0, 0, 0, 128), fundo_texto.get_rect(), border_radius=10)
             tela.blit(fundo_texto, (texto_rect.x - 20, texto_rect.y - 10))
             tela.blit(texto, texto_rect)
 
@@ -175,45 +176,48 @@ while True:
             texto = fonte.render("Pressione F para conversar", True, (255, 255, 255))
             texto_rect = texto.get_rect(center=(largura // 2, altura - 80))
             fundo_texto = pygame.Surface((texto.get_width() + 40, texto.get_height() + 20), pygame.SRCALPHA)
-            pygame.draw.rect(fundo_texto, (0, 0, 0, 128),
-                             (0, 0, texto.get_width() + 40, texto.get_height() + 20),
-                             border_radius=10)
+            pygame.draw.rect(fundo_texto, (0, 0, 0, 128), fundo_texto.get_rect(), border_radius=10)
             tela.blit(fundo_texto, (texto_rect.x - 20, texto_rect.y - 10))
             tela.blit(texto, texto_rect)
 
-            keys = pygame.key.get_pressed()
-            if keys[K_f]:
+            if pygame.key.get_pressed()[K_f]:
                 dialogo_recep.iniciar()
                 estado = EstadoJogo.dialogo
 
     if estado == EstadoJogo.corredor:
         tela.blit(fundo_corredor, (0, 0))
 
-        pos_anterior_x = personagem.rect.x
-        pos_anterior_y = personagem.rect.y
-
-        colisao_esquerda = pygame.Rect(-10, 0, 2, 600)
-        colisao_direita = pygame.Rect(830, 0, 2, 600)
-        colisao_cima = pygame.Rect(0, 0, 800, 20)
-        colisao_baixo = pygame.Rect(0, 580, 800, 20)
-
         Movimento.mover()
 
-        if (personagem.rect.colliderect(colisao_esquerda) or
-            personagem.rect.colliderect(colisao_direita) or
-            personagem.rect.colliderect(colisao_cima) or
-            personagem.rect.colliderect(colisao_baixo)):
-            personagem.rect.x = pos_anterior_x
-            personagem.rect.y = pos_anterior_y
+        todos_sprites.draw(tela)
+        todos_sprites.update()
 
+        perto_porta_floresta = personagem.rect.colliderect(porta_floresta_rect)
+
+        if perto_porta_floresta:
+            texto = fonte.render("Pressione F para entrar", True, (255, 255, 255))
+            texto_rect = texto.get_rect(center=(largura // 2, altura - 80))
+            fundo_texto = pygame.Surface((texto.get_width() + 40, texto.get_height() + 20), pygame.SRCALPHA)
+            pygame.draw.rect(fundo_texto, (0, 0, 0, 128), fundo_texto.get_rect(), border_radius=10)
+            tela.blit(fundo_texto, (texto_rect.x - 20, texto_rect.y - 10))
+            tela.blit(texto, texto_rect)
+
+            if pygame.key.get_pressed()[K_f]:
+                Porta.som_porta()
+                estado = EstadoJogo.floresta1
+                personagem.rect.midbottom = (400, 520)
+
+    if estado == EstadoJogo.floresta1:
+        tela.blit(fundo_floresta, (0, 0))
+        Movimento.mover()
         todos_sprites.draw(tela)
         todos_sprites.update()
 
     if estado == EstadoJogo.dialogo:
         tela.blit(fundo_recep, (0, 0))
         dialogo_recep.desenhar(tela, largura, altura)
-        keys = pygame.key.get_pressed()
-        if keys[K_t] and dialogo_recep.ativo:
+
+        if pygame.key.get_pressed()[K_t] and dialogo_recep.ativo:
             dialogo_recep.avancar()
         elif not dialogo_recep.ativo:
             estado = EstadoJogo.recep
