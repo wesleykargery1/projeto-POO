@@ -4,3 +4,7 @@ class EstadoJogo:
     transicao_hotel = "transicao_hotel"
     recep = "recep"
     dialogo = "dialogo"
+    corredor = "corredor"
+    floresta1 = "floresta1"
+    floresta2 = "floresta2"
+    floresta3 = "floresta3"
