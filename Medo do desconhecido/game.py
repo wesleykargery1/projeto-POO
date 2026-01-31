@@ -23,7 +23,8 @@ fundo_menu = pygame.image.load("background/menu.png").convert()
 fundo_hotel = pygame.image.load("background/Hotel.png").convert()
 fundo_recep = pygame.image.load("background/recepção-pixilart.png").convert()
 fundo_corredor = pygame.image.load("background/corredor-pixilart.png").convert()
-fundo_floresta = pygame.image.load("background/floresta1.png").convert()  
+fundo_floresta = pygame.image.load("background/floresta1.png").convert()
+fundo_floresta2 = pygame.image.load("background/floresta2.png").convert()
 
 fundo_menu = pygame.transform.scale(fundo_menu, (largura, altura))
 fundo_jogo = pygame.transform.scale(fundo_jogo, (largura, altura))
@@ -31,6 +32,7 @@ fundo_hotel = pygame.transform.scale(fundo_hotel, (largura, altura))
 fundo_recep = pygame.transform.scale(fundo_recep, (largura, altura))
 fundo_corredor = pygame.transform.scale(fundo_corredor, (largura, altura))
 fundo_floresta = pygame.transform.scale(fundo_floresta, (largura, altura))  
+fundo_floresta2 = pygame.transform.scale(fundo_floresta2, (largura, altura)) 
 
 fonte = pygame.font.Font(None, 36)
 
@@ -187,7 +189,24 @@ while True:
     if estado == EstadoJogo.corredor:
         tela.blit(fundo_corredor, (0, 0))
 
+        colisao_porta = pygame.Rect(0, 250, 800, 10)
+        colisao_esquerda = pygame.Rect(-10, 0, 2, 600)
+        colisao_direita = pygame.Rect(830, 0, 2, 600)
+        colisao_baixo = pygame.Rect(0, 580, 800, 20)
+
+
+        pos_anterior_x = personagem.rect.x
+        pos_anterior_y = personagem.rect.y
+
         Movimento.mover()
+
+ 
+        if (personagem.rect.colliderect(colisao_porta) or
+            personagem.rect.colliderect(colisao_esquerda) or
+            personagem.rect.colliderect(colisao_direita) or
+            personagem.rect.colliderect(colisao_baixo)):
+            personagem.rect.x = pos_anterior_x
+            personagem.rect.y = pos_anterior_y
 
         todos_sprites.draw(tela)
         todos_sprites.update()
@@ -209,9 +228,27 @@ while True:
 
     if estado == EstadoJogo.floresta1:
         tela.blit(fundo_floresta, (0, 0))
+
+   
+        colisao_linha_esquerda = pygame.Rect(260, 0, 10, 600)
+        colisao_linha_direita = pygame.Rect(540, 0, 10, 600)
+        colisao_baixo = pygame.Rect(0, 580, 800, 20)
+
+        pos_anterior_x = personagem.rect.x
+        pos_anterior_y = personagem.rect.y
+
         Movimento.mover()
+
+   
+        if (personagem.rect.colliderect(colisao_linha_esquerda) or
+            personagem.rect.colliderect(colisao_linha_direita) or
+            personagem.rect.colliderect(colisao_baixo)):
+            personagem.rect.x = pos_anterior_x
+            personagem.rect.y = pos_anterior_y
+
         todos_sprites.draw(tela)
         todos_sprites.update()
+
 
     if estado == EstadoJogo.dialogo:
         tela.blit(fundo_recep, (0, 0))
