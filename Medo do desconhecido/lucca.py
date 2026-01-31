@@ -81,15 +81,16 @@ class Lucca(pygame.sprite.Sprite):
         self.direcao = direcao
         self.estado = 'movendo'
         if direcao == 'cima':
-            self.rect.y -= 5
+            self.rect.y -= 3
         elif direcao == 'baixo':
-            self.rect.y += 5
+            self.rect.y += 3
         elif direcao == 'esquerda':
-            self.rect.x -= 5
+            self.rect.x -= 3
         elif direcao == 'direita':
-            self.rect.x += 5
+            self.rect.x += 3
     def parar(self):
         self.estado = 'idle'
         self.frame = 0
+
 
 
