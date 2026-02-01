@@ -162,7 +162,8 @@ while True:
 
         pos_anterior_x = personagem.rect.x
         pos_anterior_y = personagem.rect.y
-
+        
+        colisao_porta = pygame.Rect(0, 250, 800, 10)
         colisao_esquerda = pygame.Rect(-10, 0, 2, 600)
         colisao_direita = pygame.Rect(830, 0, 2, 600)
         colisao_cima = pygame.Rect(0, 0, 800, 20)
@@ -174,7 +175,8 @@ while True:
             estado = EstadoJogo.corredor
             personagem.rect.left = 10
 
-        elif (personagem.rect.colliderect(colisao_esquerda) or
+        elif (personagem.rect.colliderect(colisao_porta) or
+              personagem.rect.colliderect(colisao_esquerda) or
               personagem.rect.colliderect(colisao_cima) or
               personagem.rect.colliderect(colisao_baixo)):
             personagem.rect.x = pos_anterior_x
