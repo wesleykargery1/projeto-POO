@@ -71,6 +71,8 @@ dialogo_recep = Dialogo([
 tema = Tema()
 som_iniciado = False
 som_tocado = False
+musica_atual = None
+
 
 class Menu:
     def mostrar(self, tela):
@@ -237,9 +239,16 @@ while True:
                 personagem.rect.midbottom = (400, 520)
 
     if estado == EstadoJogo.floresta1:
+        
+        if musica_atual != "floresta":
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load("sounds/Glacier.mp3")
+            pygame.mixer.music.set_volume(0.5)
+            pygame.mixer.music.play(-1)
+            musica_atual = "floresta"
+        
+        
         tela.blit(fundo_floresta, (0, 0))
-
-   
         colisao_linha_esquerda = pygame.Rect(260, 0, 10, 600)
         colisao_linha_direita = pygame.Rect(540, 0, 10, 600)
         colisao_baixo = pygame.Rect(0, 580, 800, 20)
@@ -265,6 +274,14 @@ while True:
         todos_sprites.update()
 
     if estado == EstadoJogo.floresta2:
+
+        if musica_atual != "floresta":
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load("sounds/Glacier.mp3")
+            pygame.mixer.music.set_volume(0.5)
+            pygame.mixer.music.play(-1)
+            musica_atual = "floresta"
+        
         tela.blit(fundo_floresta2, (0, 0))
 
         colisao_linha_esquerda = pygame.Rect(260, 0, 10, 600)
@@ -291,6 +308,14 @@ while True:
         todos_sprites.update()
     
     if estado == EstadoJogo.floresta3:
+
+        if musica_atual != "floresta":
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load("sounds/Glacier.mp3")
+            pygame.mixer.music.set_volume(0.5)
+            pygame.mixer.music.play(-1)
+            musica_atual = "floresta"
+
         tela.blit(fundo_floresta3, (0, 0))
 
         colisao_arvore = pygame.Rect(0, 200, 800, 10)
@@ -329,13 +354,22 @@ while True:
                 estado = EstadoJogo.combate
     
     if estado == EstadoJogo.combate:
+        if musica_atual != "combate":
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load("sounds/SPAWN.mp3")
+            pygame.mixer.music.set_volume(0.5)
+            pygame.mixer.music.play(-1)
+            musica_atual = "combate"
+
         tela.blit(fundo_battle, (0, 0))
-        
-        combate.atualizar(tela)
+
         resultado = combate.atualizar(tela)
 
         if resultado == "MENU":
-            estado_atual = EstadoJogo.menu
+            pygame.mixer.music.stop()
+            musica_atual = None
+            estado = EstadoJogo.menu
+
 
 
     if estado == EstadoJogo.dialogo:
