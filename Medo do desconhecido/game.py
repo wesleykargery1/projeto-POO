@@ -6,8 +6,11 @@ from sys import exit
 from movimento import *
 from dialogo import *
 
+
 pygame.init()
 pygame.mixer.init()
+
+
 
 largura = 800
 altura = 600
@@ -15,6 +18,9 @@ altura = 600
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Medo do desconhecido")
 tempo = pygame.time.Clock()
+
+from combate import Combate
+combate = Combate()
 
 van = pygame.image.load("images/van.png")
 van_maior = pygame.transform.scale(van, (400, 400))
@@ -26,6 +32,7 @@ fundo_corredor = pygame.image.load("background/corredor-pixilart.png").convert()
 fundo_floresta = pygame.image.load("background/floresta1.png").convert()
 fundo_floresta2 = pygame.image.load("background/floresta2.png").convert()
 fundo_floresta3 = pygame.image.load("background/floresta3.png").convert()
+fundo_battle = pygame.image.load("background/battle.png").convert()
 
 fundo_menu = pygame.transform.scale(fundo_menu, (largura, altura))
 fundo_jogo = pygame.transform.scale(fundo_jogo, (largura, altura))
@@ -35,6 +42,7 @@ fundo_corredor = pygame.transform.scale(fundo_corredor, (largura, altura))
 fundo_floresta = pygame.transform.scale(fundo_floresta, (largura, altura))  
 fundo_floresta2 = pygame.transform.scale(fundo_floresta2, (largura, altura))
 fundo_floresta3 = pygame.transform.scale(fundo_floresta3, (largura, altura))
+fundo_battle = pygame.transform.scale(fundo_battle, (largura, altura))
 
 fonte = pygame.font.Font(None, 36)
 
@@ -278,6 +286,7 @@ while True:
         if personagem.rect.colliderect(saida_mapa2):
             estado = EstadoJogo.floresta3
             personagem.rect.midbottom = (400, 550)
+
         todos_sprites.draw(tela)
         todos_sprites.update()
     
@@ -288,6 +297,8 @@ while True:
         colisao_linha_esquerda = pygame.Rect(270, 0, 10, 600)
         colisao_linha_direita = pygame.Rect(550, 0, 10, 600)
         colisao_baixo = pygame.Rect(0, 580, 800, 20)
+
+        arvore_rect = pygame.Rect(350, 180, 100, 120)
 
         pos_anterior_x = personagem.rect.x
         pos_anterior_y = personagem.rect.y
@@ -304,6 +315,39 @@ while True:
         todos_sprites.draw(tela)
         todos_sprites.update()
 
+        perto_arvore_floresta = personagem.rect.colliderect(arvore_rect)
+
+        if perto_arvore_floresta:
+            texto = fonte.render("Pressione F para lutar", True, (255, 255, 255))
+            texto_rect = texto.get_rect(center=(largura // 2, altura - 80))
+            fundo_texto = pygame.Surface((texto.get_width() + 40, texto.get_height() + 20), pygame.SRCALPHA)
+            pygame.draw.rect(fundo_texto, (0, 0, 0, 128), fundo_texto.get_rect(), border_radius=10)
+            tela.blit(fundo_texto, (texto_rect.x - 20, texto_rect.y - 10))
+            tela.blit(texto, texto_rect)
+
+            if pygame.key.get_pressed()[K_f]:
+                estado = EstadoJogo.combate
+    
+    if estado == EstadoJogo.combate:
+        tela.blit(fundo_battle, (0, 0))
+        
+        combate.atualizar(tela)
+        resultado = combate.atualizar(tela)
+
+        if resultado == "MENU":
+            estado_atual = EstadoJogo.menu
+
+
+    if estado == EstadoJogo.dialogo:
+        tela.blit(fundo_recep, (0, 0))
+        dialogo_recep.desenhar(tela, largura, altura)
+
+        if pygame.key.get_pressed()[K_t] and dialogo_recep.ativo:
+            dialogo_recep.avancar()
+        elif not dialogo_recep.ativo:
+            estado = EstadoJogo.recep
+
+
     if estado == EstadoJogo.dialogo:
         tela.blit(fundo_recep, (0, 0))
         dialogo_recep.desenhar(tela, largura, altura)
@@ -315,4 +359,5 @@ while True:
 
     pygame.display.flip()
     tempo.tick(60)
+
 
