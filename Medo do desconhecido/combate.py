@@ -27,6 +27,10 @@ class Jogador:
             self.sprite, (self.rect.width, self.rect.height)
         )
 
+        self.vida_sprite = pygame.image.load("sprites/vida.png").convert_alpha()
+        self.vida_sprite = pygame.transform.scale(self.vida_sprite, (24, 24))
+
+
     def update(self):
         keys = pygame.key.get_pressed()
 
@@ -44,19 +48,39 @@ class Jogador:
     def draw(self, tela):
         tela.blit(self.sprite, self.rect)
 
-
         for i in range(self.vida):
-            pygame.draw.rect(tela, (0, 200, 0), (20 + i * 25, 560, 20, 20))
+            tela.blit(
+                self.vida_sprite,
+                (20 + i * 28, 560)
+        )
 
 
 class Boss:
     def __init__(self):
-        self.rect = pygame.Rect(LARGURA // 2 - 80, 120, 160, 80)
+        self.rect = pygame.Rect(LARGURA // 2 - 80, 120, 160, 160)
         self.vida = 100
 
-    def draw(self, tela):
-        pygame.draw.rect(tela, (200, 60, 60), self.rect)
+      
+        self.frames = []
+        for i in range(11): 
+            img = pygame.image.load(f"sprites/arvore/arvore{i}.png").convert_alpha()
+            img = pygame.transform.scale(img, (self.rect.width, self.rect.height))
+            self.frames.append(img)
 
+        self.frame_atual = 0
+        self.tempo_animacao = 120  
+        self.ultimo_frame = pygame.time.get_ticks()
+
+    def update(self):
+        agora = pygame.time.get_ticks()
+        if agora - self.ultimo_frame >= self.tempo_animacao:
+            self.frame_atual = (self.frame_atual + 1) % len(self.frames)
+            self.ultimo_frame = agora
+
+    def draw(self, tela):
+        tela.blit(self.frames[self.frame_atual], self.rect)
+
+   
         largura_barra = 200
         vida_ratio = self.vida / 100
         pygame.draw.rect(tela, (60, 60, 60), (300, 60, largura_barra, 15))
@@ -65,6 +89,7 @@ class Boss:
             (200, 0, 0),
             (300, 60, largura_barra * vida_ratio, 15),
         )
+
 
 
 class Ataque:
@@ -167,17 +192,27 @@ class Combate:
         if self.vitoria:
             tela.blit(fundo_vitoria, (0, 0))
 
-            texto1 = self.fonte_vitoria.render(
-                "Parabéns você vingou seu pai matando aquilo que estava o consumindo!",
-                True, (255, 255, 255)
-            )
+            linhas = [
+                "Parabéns!",
+                "Você vingou seu pai",
+                "matando aquilo que estava",
+                "o consumindo!"
+            ]
 
-            tela.blit(texto1, (LARGURA // 2 - texto1.get_width() // 2, 350))
+            y = 300
+            for linha in linhas:
+                texto = self.fonte_vitoria.render(linha, True, (255, 255, 255))
+                tela.blit(
+                    texto,
+                    (LARGURA // 2 - texto.get_width() // 2, y)
+                )
+                y += 40
 
             if keys[pygame.K_m]:
                 return "MENU"
 
             return None
+
 
 
         if self.game_over:
@@ -226,6 +261,7 @@ class Combate:
             self.vitoria = True
 
         self.jogador.draw(tela)
+        self.boss.update()
         self.boss.draw(tela)
 
         for ataque in self.ataques:
@@ -240,7 +276,7 @@ class Combate:
         restante = self.cooldown - (agora - self.ultimo_ataque)
 
         if restante <= 0:
-            texto = self.fonte.render("Atacar!", True, (0, 255, 0))
+            texto = self.fonte.render("Atacar! (Espaço)", True, (0, 255, 0))
             tela.blit(texto, (350, 520))
         else:
             proporcao = restante / self.cooldown
