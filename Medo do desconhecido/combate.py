@@ -4,12 +4,28 @@ import random
 LARGURA = 800
 ALTURA = 600
 
+fundo_battle = pygame.image.load("background/battle.png").convert()
+fundo_battle = pygame.transform.scale(fundo_battle, (LARGURA, ALTURA))
+
+fundo_game_over = pygame.image.load("background/GameOver.png").convert()
+fundo_game_over = pygame.transform.scale(fundo_game_over, (LARGURA, ALTURA))
+
+fundo_vitoria = pygame.image.load("background/vitoria.png").convert()
+fundo_vitoria = pygame.transform.scale(fundo_vitoria, (LARGURA, ALTURA))
+
+
+
 
 class Jogador:
     def __init__(self):
         self.rect = pygame.Rect(380, 480, 40, 40)
         self.vel = 5
         self.vida = 5
+
+        self.sprite = pygame.image.load("sprites/alma.png").convert_alpha()
+        self.sprite = pygame.transform.scale(
+            self.sprite, (self.rect.width, self.rect.height)
+        )
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -26,7 +42,8 @@ class Jogador:
         self.rect.clamp_ip(pygame.Rect(0, 0, LARGURA, ALTURA))
 
     def draw(self, tela):
-        pygame.draw.rect(tela, (80, 180, 255), self.rect)
+        tela.blit(self.sprite, self.rect)
+
 
         for i in range(self.vida):
             pygame.draw.rect(tela, (0, 200, 0), (20 + i * 25, 560, 20, 20))
@@ -116,11 +133,17 @@ class Ataque:
     def draw(self, tela):
         tela.blit(self.sprite, self.rect)
 
-
 class Combate:
     def __init__(self):
         self.jogador = Jogador()
         self.boss = Boss()
+
+        self.game_over = False
+        self.vitoria = False
+
+        self.fonte_game_over = pygame.font.Font(None, 48)
+        self.fonte_vitoria = pygame.font.Font(None, 36)
+        self.fonte = pygame.font.Font(None, 36)
 
         self.ataques = []
         self.ultimo_spawn = pygame.time.get_ticks()
@@ -128,14 +151,51 @@ class Combate:
         self.cooldown = 3000
         self.ultimo_ataque = -self.cooldown
 
-        self.fonte = pygame.font.Font(None, 36)
+    def resetar(self):
+        self.jogador = Jogador()
+        self.boss = Boss()
+        self.ataques.clear()
+        self.ultimo_spawn = pygame.time.get_ticks()
+        self.ultimo_ataque = -self.cooldown
+        self.game_over = False
+        self.vitoria = False
 
     def atualizar(self, tela):
         agora = pygame.time.get_ticks()
+        keys = pygame.key.get_pressed()
+
+        if self.vitoria:
+            tela.blit(fundo_vitoria, (0, 0))
+
+            texto1 = self.fonte_vitoria.render(
+                "Parabéns você vingou seu pai matando aquilo que estava o consumindo!",
+                True, (255, 255, 255)
+            )
+
+            tela.blit(texto1, (LARGURA // 2 - texto1.get_width() // 2, 350))
+
+            if keys[pygame.K_m]:
+                return "MENU"
+
+            return None
+
+
+        if self.game_over:
+            tela.blit(fundo_game_over, (0, 0))
+
+            texto = self.fonte_game_over.render(
+                "Tentar de novo? Aperte R", True, (255, 255, 255)
+            )
+            tela.blit(texto, (LARGURA // 2 - texto.get_width() // 2, 450))
+
+            if keys[pygame.K_r]:
+                self.resetar()
+
+            return None
+
 
         self.jogador.update()
 
-        keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE]:
             if agora - self.ultimo_ataque >= self.cooldown:
                 self.boss.vida -= 5
@@ -147,24 +207,33 @@ class Combate:
                 self.ataques.append(Ataque())
             self.ultimo_spawn = agora
 
-        for a in self.ataques[:]:
-            a.update(self.jogador)
+        tela.blit(fundo_battle, (0, 0))
 
-            if a.rect.colliderect(self.jogador.rect):
-                self.ataques.remove(a)
+        for ataque in self.ataques[:]:
+            ataque.update(self.jogador)
+
+            if ataque.rect.colliderect(self.jogador.rect):
+                self.ataques.remove(ataque)
                 self.jogador.vida -= 1
 
-            elif a.rect.top > ALTURA:
-                self.ataques.remove(a)
+            elif ataque.rect.top > ALTURA:
+                self.ataques.remove(ataque)
 
-        tela.fill((15, 15, 30))
+        if self.jogador.vida <= 0:
+            self.game_over = True
+
+        if self.boss.vida <= 0:
+            self.vitoria = True
+
         self.jogador.draw(tela)
         self.boss.draw(tela)
 
-        for a in self.ataques:
-            a.draw(tela)
+        for ataque in self.ataques:
+            ataque.draw(tela)
 
         self.desenhar_cooldown(tela)
+
+        return None
 
     def desenhar_cooldown(self, tela):
         agora = pygame.time.get_ticks()
@@ -179,5 +248,5 @@ class Combate:
             pygame.draw.rect(
                 tela,
                 (0, 200, 0),
-                (250, 520, 300 * (1 - proporcao), 20),
+                (250, 520, 300 * (1 - proporcao), 20)
             )
