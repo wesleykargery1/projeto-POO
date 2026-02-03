@@ -6,10 +6,11 @@ pygame.init()
 
 class Lucca(pygame.sprite.Sprite):
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        
         self.aumentar = 2.0
         self.no_hotel = False
+        self.fora_hotel = False
+        self.floresta = False
+        pygame.sprite.Sprite.__init__(self)
         
         self.sprites_movimento = {
             'cima': [pygame.transform.scale(pygame.image.load('sprites/lucca-de-costa-andando-1-pixilart.png'), (32 * self.aumentar, 32 * self.aumentar)),
@@ -45,9 +46,18 @@ class Lucca(pygame.sprite.Sprite):
         self.rect.topleft = (800 / 2, 600 / 2)
     
 
-    def ajustar_tamanho(self, no_hotel):
+    def ajustar_tamanho(self, no_hotel, fora_hotel, floresta):
+        self.floresta = floresta
         self.no_hotel = no_hotel
-        novo_aumentar = 3.0 if no_hotel else 2.0 
+        self.fora_hotel = fora_hotel
+        if floresta:
+         novo_aumentar = 1.0
+        elif no_hotel:
+         novo_aumentar = 3.0
+        elif fora_hotel:
+         novo_aumentar = 4.0
+        else:
+         novo_aumentar = 2.0
         
         if novo_aumentar != self.aumentar:
             self.aumentar = novo_aumentar
@@ -91,6 +101,8 @@ class Lucca(pygame.sprite.Sprite):
     def parar(self):
         self.estado = 'idle'
         self.frame = 0
+    
+    
 
 
 

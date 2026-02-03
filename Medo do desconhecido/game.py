@@ -157,7 +157,7 @@ while True:
             tela.blit(texto, texto_rect)
 
     if estado == EstadoJogo.recep:
-        personagem.ajustar_tamanho(True)
+        personagem.ajustar_tamanho(True, False, False)
         tela.blit(fundo_recep, (0, 0))
 
         pos_anterior_x = personagem.rect.x
@@ -201,6 +201,7 @@ while True:
                 estado = EstadoJogo.dialogo
 
     if estado == EstadoJogo.corredor:
+        personagem.ajustar_tamanho(False, True, False)
         tela.blit(fundo_corredor, (0, 0))
 
         colisao_porta = pygame.Rect(0, 250, 800, 10)
@@ -228,6 +229,7 @@ while True:
         perto_porta_floresta = personagem.rect.colliderect(porta_floresta_rect)
 
         if perto_porta_floresta:
+            personagem.ajustar_tamanho(False, False, True)
             texto = fonte.render("Pressione F para entrar", True, (255, 255, 255))
             texto_rect = texto.get_rect(center=(largura // 2, altura - 80))
             fundo_texto = pygame.Surface((texto.get_width() + 40, texto.get_height() + 20), pygame.SRCALPHA)
@@ -241,7 +243,6 @@ while True:
                 personagem.rect.midbottom = (400, 520)
 
     if estado == EstadoJogo.floresta1:
-        
         if musica_atual != "floresta":
             pygame.mixer.music.stop()
             pygame.mixer.music.load("sounds/Glacier.mp3")
@@ -251,8 +252,8 @@ while True:
         
         
         tela.blit(fundo_floresta, (0, 0))
-        colisao_linha_esquerda = pygame.Rect(260, 0, 10, 600)
-        colisao_linha_direita = pygame.Rect(540, 0, 10, 600)
+        colisao_linha_esquerda = pygame.Rect(300, 0, 10, 600)
+        colisao_linha_direita = pygame.Rect(620, 0, 10, 600)
         colisao_baixo = pygame.Rect(0, 580, 800, 20)
         saida_mapa1 = pygame.Rect(0, -10, 800, 20)
 
@@ -286,8 +287,8 @@ while True:
         
         tela.blit(fundo_floresta2, (0, 0))
 
-        colisao_linha_esquerda = pygame.Rect(260, 0, 10, 600)
-        colisao_linha_direita = pygame.Rect(540, 0, 10, 600)
+        colisao_linha_esquerda = pygame.Rect(300, 0, 10, 600)
+        colisao_linha_direita = pygame.Rect(620, 0, 10, 600)
         colisao_baixo = pygame.Rect(0, 580, 800, 20)
         saida_mapa2 = pygame.Rect(0, -10, 800, 20)
 
@@ -321,8 +322,8 @@ while True:
         tela.blit(fundo_floresta3, (0, 0))
 
         colisao_arvore = pygame.Rect(0, 200, 800, 10)
-        colisao_linha_esquerda = pygame.Rect(270, 0, 10, 600)
-        colisao_linha_direita = pygame.Rect(550, 0, 10, 600)
+        colisao_linha_esquerda = pygame.Rect(300, 0, 10, 600)
+        colisao_linha_direita = pygame.Rect(620, 0, 10, 600)
         colisao_baixo = pygame.Rect(0, 580, 800, 20)
 
         arvore_rect = pygame.Rect(350, 180, 100, 120)
