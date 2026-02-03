@@ -8,3 +8,7 @@ class EstadoJogo:
     floresta1 = "floresta1"
     floresta2 = "floresta2"
     floresta3 = "floresta3"
+    combate = "combate"
+    combate2 = "combate2"
+    combate3 = "combate3"
+    morte = "morte"
