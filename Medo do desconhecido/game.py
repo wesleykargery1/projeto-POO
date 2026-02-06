@@ -33,6 +33,7 @@ fundo_floresta = pygame.image.load("background/floresta1.png").convert()
 fundo_floresta2 = pygame.image.load("background/floresta2.png").convert()
 fundo_floresta3 = pygame.image.load("background/floresta3.png").convert()
 fundo_battle = pygame.image.load("background/battle.png").convert()
+fundo_vitoria = pygame.image.load("background/vitoria.png").convert()
 
 fundo_menu = pygame.transform.scale(fundo_menu, (largura, altura))
 fundo_jogo = pygame.transform.scale(fundo_jogo, (largura, altura))
@@ -205,17 +206,20 @@ while True:
         tela.blit(fundo_corredor, (0, 0))
 
         colisao_porta = pygame.Rect(0, 250, 800, 10)
-        colisao_esquerda = pygame.Rect(-10, 0, 2, 600)
+        colisao_esquerda = pygame.Rect(-20, 0, 2, 600)
         colisao_direita = pygame.Rect(830, 0, 2, 600)
         colisao_baixo = pygame.Rect(0, 580, 800, 20)
+        colisao_secreto = pygame.Rect(-15,0,2,600)
 
 
         pos_anterior_x = personagem.rect.x
         pos_anterior_y = personagem.rect.y
 
-        Movimento.mover()
+        secreto_ativo = personagem.rect.colliderect(colisao_secreto)
+        if not secreto_ativo:
+            Movimento.mover()
 
- 
+    
         if (personagem.rect.colliderect(colisao_porta) or
             personagem.rect.colliderect(colisao_esquerda) or
             personagem.rect.colliderect(colisao_direita) or
@@ -225,7 +229,8 @@ while True:
 
         todos_sprites.draw(tela)
         todos_sprites.update()
-
+        if secreto_ativo:
+            tela.blit(fundo_vitoria, (0, 0))
         perto_porta_floresta = personagem.rect.colliderect(porta_floresta_rect)
 
         if perto_porta_floresta:
@@ -396,5 +401,3 @@ while True:
 
     pygame.display.flip()
     tempo.tick(60)
-
-

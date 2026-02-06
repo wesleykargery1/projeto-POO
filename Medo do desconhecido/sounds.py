@@ -8,7 +8,7 @@ class Carro:
 
 class Porta:
   def som_porta():
-    porta = pygame.mixer.Sound('sounds/SOM DE PORTA ABRINDO(MP3_160K).mp3')
+    porta = pygame.mixer.Sound('sounds\porta.mp3')
     porta.set_volume(1.0)
     porta.play()
 
